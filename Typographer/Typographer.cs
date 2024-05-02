@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Typographer
 {
     public partial class Typographer : Form
@@ -15,7 +17,19 @@ namespace Typographer
         }
         private void inputdata_TextChanged(object sender, EventArgs e)
         {
-            outputdata.Text = inputdata.Text;
+            /* 1 */
+            string formattedText = Regex.Replace(inputdata.Text, @"\s+([.,;:!?])", "$1 ");
+            formattedText = Regex.Replace(formattedText, @"([.,;:!?])\s+", "$1 ");
+            formattedText = Regex.Replace(formattedText, @"\s+(\(|\)|\'\{|\}|\[|\]|\"")", "$1");
+            formattedText = Regex.Replace(formattedText, @"(\s|^)-|-(\s|$)", "$1$2");
+            formattedText = Regex.Replace(formattedText, @"'\s+", "'");
+            formattedText = Regex.Replace(formattedText, @"\s+'", "'");
+            formattedText = Regex.Replace(formattedText, "\"\\s*", "\"");
+            formattedText = Regex.Replace(formattedText, "\\s*\"", "\"");
+            /* 2 */
+            formattedText = Regex.Replace(formattedText, @"\s+", " ");
+            /* 9 */
+            outputdata.Text = formattedText;
         }
     }
 }
