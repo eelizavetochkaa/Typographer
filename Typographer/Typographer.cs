@@ -21,7 +21,7 @@ namespace Typographer
             string formattedText = Regex.Replace(inputdata.Text, @"\s+([.,;:!?])", "$1 ");
             formattedText = Regex.Replace(formattedText, @"([.,;:!?])\s+", "$1 ");
             formattedText = Regex.Replace(formattedText, @"\s+(\(|\)|\'\{|\}|\[|\]|\"")", "$1");
-            formattedText = Regex.Replace(formattedText, @"(\s|^)-|-(\s|$)", "$1$2");
+            /*formattedText = Regex.Replace(formattedText, @"(\s|^)-|-(\s|$)", "$1$2");*/
 
             bool incavychky = false;
             for (int i = 0; i < formattedText.Length; i++)
@@ -105,15 +105,34 @@ namespace Typographer
                     openedcavychky++;
                 }
             }
-            /*9????*/
-            formattedText = Regex.Replace(formattedText, @"\b\+-\b", "±");
+            /*9*/
+            formattedText = Regex.Replace(formattedText, @"\+-", "±");
 
-            /*13*/
-            formattedText = Regex.Replace(formattedText, @"\...", "…");
-            outputdata.Text = formattedText;
+            /* моё правило 1: первые буквы предложений заглавные */
+            if (!string.IsNullOrEmpty(formattedText))
+            {
+                /*13*/
+                formattedText = Regex.Replace(formattedText, @"\.{3}", "…");
 
-            /* моё правило 1 */
-            
+                string[] sentences = Regex.Split(formattedText, @"(?<=[.!?])\s+");
+
+                for (int i = 0; i < sentences.Length; i++)
+                {
+                    if (!string.IsNullOrEmpty(sentences[i]))
+                    {
+                        sentences[i] = sentences[i].Trim();
+                        char firstChar = char.ToUpper(sentences[i][0]);
+                        string restOfString = sentences[i].Substring(1);
+                        sentences[i] = firstChar + restOfString;
+                    }
+                }
+
+                formattedText = string.Join(" ", sentences);
+            }
+
+            /*моё правило 2 */
+
+
             /*мой абсурд*/
             formattedText = Regex.Replace(formattedText, "о", "♥", RegexOptions.IgnoreCase);
             formattedText = Regex.Replace(formattedText, "o", "♥", RegexOptions.IgnoreCase);
@@ -121,7 +140,6 @@ namespace Typographer
 
             outputdata.Text = formattedText;
         }
-
         private void delete_Click(object sender, EventArgs e)
         {
             inputdata.Text = string.Empty;
