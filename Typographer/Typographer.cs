@@ -17,11 +17,13 @@ namespace Typographer
         }
         private void inputdata_TextChanged(object sender, EventArgs e)
         {
-            /* 1 ??? кавычки, запятые итп*/
+            /* 1 ??? кавычки, запятые итп */
             string formattedText = Regex.Replace(inputdata.Text, @"\s+([.,;:!?])", "$1 ");
             formattedText = Regex.Replace(formattedText, @"([.,;:!?])\s+", "$1 ");
             formattedText = Regex.Replace(formattedText, @"\s+(\(|\)|\'\{|\}|\[|\]|\"")", "$1");
-            /*formattedText = Regex.Replace(formattedText, @"(\s|^)-|-(\s|$)", "$1$2");*/
+
+            formattedText = Regex.Replace(formattedText, @"-", " - ");
+
 
             bool incavychky = false;
             for (int i = 0; i < formattedText.Length; i++)
@@ -106,7 +108,7 @@ namespace Typographer
                 }
             }
             /*9*/
-            formattedText = Regex.Replace(formattedText, @"\+-", "±");
+            formattedText = Regex.Replace(formattedText, @"\+ -", "±");
 
             /* моё правило 1: первые буквы предложений заглавные */
             if (!string.IsNullOrEmpty(formattedText))
@@ -118,19 +120,28 @@ namespace Typographer
 
                 for (int i = 0; i < sentences.Length; i++)
                 {
-                    if (!string.IsNullOrEmpty(sentences[i]))
+                    try
                     {
-                        sentences[i] = sentences[i].Trim();
-                        char firstChar = char.ToUpper(sentences[i][0]);
-                        string restOfString = sentences[i].Substring(1);
-                        sentences[i] = firstChar + restOfString;
+                        if (!string.IsNullOrEmpty(sentences[i]))
+                        {
+                            sentences[i] = sentences[i].Trim();
+                            char firstChar = char.ToUpper(sentences[i][0]);
+                            string restOfString = sentences[i].Substring(1);
+                            sentences[i] = firstChar + restOfString;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Возникла ошибка: {ex}");
                     }
                 }
 
                 formattedText = string.Join(" ", sentences);
             }
 
-            /*моё правило 2 */
+            /*моё правило 2: удаление пробела перед знаком процента*/
+             formattedText = Regex.Replace(formattedText, @"\s+%", "%");
+
 
 
             /*мой абсурд*/
@@ -144,5 +155,6 @@ namespace Typographer
         {
             inputdata.Text = string.Empty;
         }
+
     }
 }
