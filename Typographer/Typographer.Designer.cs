@@ -93,6 +93,7 @@
             delete.TabIndex = 4;
             delete.Text = "Стереть всё";
             delete.UseVisualStyleBackColor = false;
+            delete.Click += delete_Click;
             // 
             // Typographer
             // 

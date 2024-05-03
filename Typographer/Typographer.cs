@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Typographer
 {
@@ -13,11 +14,10 @@ namespace Typographer
         {
             Clipboard.SetText(outputdata.Text);
             MessageBox.Show("Текст скопирован в буфер обмена!");
-
         }
         private void inputdata_TextChanged(object sender, EventArgs e)
         {
-            /* 1 кавычки, запятые итп*/
+            /* 1 ??? кавычки, запятые итп*/
             string formattedText = Regex.Replace(inputdata.Text, @"\s+([.,;:!?])", "$1 ");
             formattedText = Regex.Replace(formattedText, @"([.,;:!?])\s+", "$1 ");
             formattedText = Regex.Replace(formattedText, @"\s+(\(|\)|\'\{|\}|\[|\]|\"")", "$1");
@@ -28,7 +28,7 @@ namespace Typographer
             {
                 if (formattedText[i] == '"')
                 {
-                    incavychky = !incavychky; 
+                    incavychky = !incavychky;
                     if (incavychky)
                     {
                         int spacesToRemove = 0;
@@ -72,21 +72,21 @@ namespace Typographer
             formattedText = Regex.Replace(formattedText, @"\s+", " ");
 
             /* 3 заменять на ёлочки*/
-            int openedcavychky = 0; 
+            int openedcavychky = 0;
             for (int i = 0; i < formattedText.Length; i++)
             {
                 if (formattedText[i] == '"')
                 {
-                    if (openedcavychky % 2 == 0) 
+                    if (openedcavychky % 2 == 0)
                     {
                         formattedText = formattedText.Remove(i, 1).Insert(i, " «");
 
                     }
                     else
                     {
-                        formattedText = formattedText.Remove(i, 1).Insert(i, "» "); 
+                        formattedText = formattedText.Remove(i, 1).Insert(i, "» ");
                     }
-                    openedcavychky++; 
+                    openedcavychky++;
                 }
             }
             for (int i = 0; i < formattedText.Length; i++)
@@ -105,9 +105,26 @@ namespace Typographer
                     openedcavychky++;
                 }
             }
+            /*9????*/
+            formattedText = Regex.Replace(formattedText, @"\b\+-\b", "±");
+
+            /*13*/
+            formattedText = Regex.Replace(formattedText, @"\...", "…");
+            outputdata.Text = formattedText;
+
+            /* моё правило 1 */
+            
+            /*мой абсурд*/
+            formattedText = Regex.Replace(formattedText, "о", "♥", RegexOptions.IgnoreCase);
+            formattedText = Regex.Replace(formattedText, "o", "♥", RegexOptions.IgnoreCase);
+
 
             outputdata.Text = formattedText;
-            
+        }
+
+        private void delete_Click(object sender, EventArgs e)
+        {
+            inputdata.Text = string.Empty;
         }
     }
 }
